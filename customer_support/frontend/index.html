@@ -1,0 +1,1730 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BankEase - Banking Support Platform</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary: #1a4f8c;
+            --primary-dark: #0d3a6b;
+            --secondary: #4caf50;
+            --accent: #ff6b35;
+            --light: #f5f7fa;
+            --dark: #2c3e50;
+            --gray: #7f8c8d;
+            --danger: #e74c3c;
+            --warning: #f39c12;
+            --success: #27ae60;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--light);
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header Styles */
+        header {
+            background-color: white;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo i {
+            color: var(--primary);
+            font-size: 28px;
+        }
+
+        .logo h1 {
+            font-size: 24px;
+            color: var(--primary);
+        }
+
+        .logo span {
+            color: var(--accent);
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 25px;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        nav a:hover, nav a.active {
+            color: var(--primary);
+        }
+
+        .user-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-outline:hover {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn-sm {
+            padding: 5px 10px;
+            font-size: 12px;
+        }
+
+        /* Page Styles */
+        .page {
+            display: none;
+            padding: 40px 0;
+            min-height: calc(100vh - 80px);
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        .page-header {
+            margin-bottom: 30px;
+        }
+
+        .page-header h2 {
+            font-size: 32px;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+
+        .page-header p {
+            color: var(--gray);
+            max-width: 700px;
+        }
+
+        /* Form Styles */
+        .form-container {
+            max-width: 500px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--dark);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: border 0.3s;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary);
+            outline: none;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 15px;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+        }
+
+        /* Table Styles */
+        .table-container {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        th {
+            background-color: #f5f7fa;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        tr:hover {
+            background-color: #f9f9f9;
+        }
+
+        .status-badge {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-pending {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+
+        .status-in-progress {
+            background-color: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .status-resolved {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .priority-high {
+            color: var(--danger);
+            font-weight: 600;
+        }
+
+        .priority-medium {
+            color: var(--warning);
+            font-weight: 600;
+        }
+
+        .priority-low {
+            color: var(--success);
+            font-weight: 600;
+        }
+
+        /* Card Styles */
+        .card {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .card-header h3 {
+            color: var(--primary);
+        }
+
+        /* Complaint Details */
+        .complaint-details {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+        }
+
+        .complaint-info {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .complaint-history {
+            margin-top: 30px;
+        }
+
+        .ai-classification {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .classification-item {
+            background-color: #f5f7fa;
+            padding: 15px;
+            border-radius: 5px;
+            text-align: center;
+        }
+
+        .classification-item h4 {
+            font-size: 14px;
+            color: var(--gray);
+            margin-bottom: 5px;
+        }
+
+        .classification-item p {
+            font-weight: 600;
+            font-size: 18px;
+        }
+
+        /* Dashboard Styles */
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+        }
+
+        .stat-icon.primary {
+            background-color: var(--primary);
+        }
+
+        .stat-icon.secondary {
+            background-color: var(--secondary);
+        }
+
+        .stat-icon.accent {
+            background-color: var(--accent);
+        }
+
+        .stat-info h3 {
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
+
+        .stat-info p {
+            color: var(--gray);
+            font-size: 14px;
+        }
+
+        /* Team Dashboard */
+        .teams-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .team-card {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            padding: 20px;
+            transition: transform 0.3s;
+        }
+
+        .team-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .team-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .team-name {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .team-status {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-available {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .status-busy {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        .status-doubt {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+
+        .team-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--gray);
+        }
+
+        .team-progress {
+            margin-bottom: 15px;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background-color: #e9ecef;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background-color: var(--primary);
+            border-radius: 4px;
+        }
+
+        .team-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        /* Analytics Charts */
+        .charts-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .chart-card {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            padding: 20px;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 300px;
+            width: 100%;
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--dark);
+            color: white;
+            padding: 40px 0 20px;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .footer-section h3 {
+            margin-bottom: 20px;
+            font-size: 18px;
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 10px;
+        }
+
+        .footer-section a {
+            color: #ddd;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-section a:hover {
+            color: white;
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid #444;
+            font-size: 14px;
+            color: #aaa;
+        }
+
+        /* Login/Register Pages */
+        .auth-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 80vh;
+        }
+
+        .auth-selector {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+            justify-content: center;
+        }
+
+        .auth-option {
+            padding: 15px 30px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+
+        .auth-option:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .auth-option.active {
+            border-color: var(--primary);
+        }
+
+        .auth-option i {
+            font-size: 40px;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+
+        .auth-option h3 {
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+
+        .auth-option p {
+            color: var(--gray);
+            font-size: 14px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            nav ul {
+                gap: 15px;
+            }
+
+            .complaint-details {
+                grid-template-columns: 1fr;
+            }
+
+            .ai-classification {
+                grid-template-columns: 1fr;
+            }
+
+            .form-row {
+                flex-direction: column;
+                gap: 0;
+            }
+
+            .table-container {
+                overflow-x: auto;
+            }
+
+            .charts-container {
+                grid-template-columns: 1fr;
+            }
+
+            .chart-card {
+                min-width: 100%;
+            }
+
+            .auth-selector {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .auth-option {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header id="main-header" style="display: none;">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-university"></i>
+                    <h1> Bank<span>Ease</span></h1>
+                </div>
+                <nav>
+                    <ul>
+                        <li><a href="#" class="nav-link active" data-page="home">Home</a></li>
+                        <li><a href="#" class="nav-link" data-page="complaints">Complaints</a></li>
+                        <li><a href="#" class="nav-link" data-page="routing">Routing</a></li>
+                        <li><a href="#" class="nav-link" data-page="analytics">Analytics</a></li>
+                        <li><a href="#" class="nav-link" data-page="team-dashboard">Team Dashboard</a></li>
+                    </ul>
+                </nav>
+                <div class="user-actions">
+                    <span>Welcome, <strong id="user-display-name">User</strong></span>
+                    <button class="btn btn-outline" id="logout-btn">Logout</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Pages -->
+    <main>
+        <!-- Auth Selection Page -->
+        <section id="auth-selection" class="page active">
+            <div class="container auth-container">
+                <div style="text-align: center; margin-bottom: 40px;">
+                    <div class="logo" style="justify-content: center; margin-bottom: 20px;">
+                        <i class="fas fa-university" style="font-size: 48px;"></i>
+                        <h1 style="font-size: 36px;">Bank<span>Ease</span></h1>
+                    </div>
+                    <h2>Banking Support Platform</h2>
+                    <p>AI-powered complaint management system for efficient resolution</p>
+                </div>
+                
+                <div class="auth-selector">
+                    <div class="auth-option active" id="login-option">
+                        <i class="fas fa-sign-in-alt"></i>
+                        <h3>Employee Login</h3>
+                        <p>Access the platform with your employee credentials</p>
+                    </div>
+                    <div class="auth-option" id="register-option">
+                        <i class="fas fa-building"></i>
+                        <h3>Register Bank</h3>
+                        <p>Set up your bank's account on our platform</p>
+                    </div>
+                </div>
+                
+                <!-- Login Form -->
+                <div id="login-form-container" class="form-container">
+                    <h2 style="text-align: center; margin-bottom: 20px; color: var(--primary);">Employee Login</h2>
+                    <form id="login-form">
+                        <div class="form-group">
+                            <label for="employee-id">Employee ID</label>
+                            <input type="text" id="employee-id" class="form-control" placeholder="Enter your employee ID" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="employee-name">Full Name</label>
+                            <input type="text" id="employee-name" class="form-control" placeholder="Enter your full name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="password">Password</label>
+                            <input type="password" id="password" class="form-control" placeholder="Enter your password" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="team">Team/Role</label>
+                            <select id="team" class="form-control" required>
+                                <option value="">Select your team</option>
+                                <option value="customer-support">Customer Support</option>
+                                <option value="it-support">IT Support</option>
+                                <option value="operations">Operations</option>
+                                <option value="compliance-fraud">Compliance & Fraud</option>
+                                <option value="product-service">Product/Service Teams</option>
+                                <option value="admin">Admin</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="width: 100%;">Login</button>
+                    </form>
+                </div>
+                
+                <!-- Register Form -->
+                <div id="register-form-container" class="form-container" style="display: none;">
+                    <h2 style="text-align: center; margin-bottom: 20px; color: var(--primary);">Register Your Bank</h2>
+                    <form id="register-form">
+                        <div class="form-group">
+                            <label for="bank-name">Bank Name</label>
+                            <input type="text" id="bank-name" class="form-control" placeholder="Enter your bank name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="bank-id">Bank ID</label>
+                            <input type="text" id="bank-id" class="form-control" placeholder="Enter your bank ID" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="branch">Branch</label>
+                            <input type="text" id="branch" class="form-control" placeholder="Enter branch name" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="width: 100%;">Register Bank</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <!-- Home Page -->
+        <section id="home" class="page">
+            <div class="container">
+                <div class="page-header">
+                    <h2>BankEase - Banking Support Platform</h2>
+                    <p>AI-powered complaint management system for efficient resolution</p>
+                </div>
+                
+                <div class="stats-container">
+                    <div class="stat-card">
+                        <div class="stat-icon primary">
+                            <i class="fas fa-exclamation-circle"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>142</h3>
+                            <p>New Complaints Today</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon secondary">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>89%</h3>
+                            <p>Resolution Rate</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon accent">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>2.1h</h3>
+                            <p>Avg. Response Time</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Team Dashboard on Home Page -->
+                <div class="page-header">
+                    <h2>Team Dashboard</h2>
+                    <p>View team availability and assign complaints efficiently</p>
+                </div>
+
+                <div class="teams-container">
+                    <div class="team-card">
+                        <div class="team-header">
+                            <div class="team-name">Customer Support</div>
+                            <div class="team-status status-available">Available</div>
+                        </div>
+                        <div class="team-stats">
+                            <div class="stat">
+                                <div class="stat-value">12</div>
+                                <div class="stat-label">Pending</div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-value">45</div>
+                                <div class="stat-label">Completed</div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-value">85%</div>
+                                <div class="stat-label">Success Rate</div>
+                            </div>
+                        </div>
+                        <div class="team-progress">
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 65%"></div>
+                            </div>
+                            <div style="font-size: 12px; color: var(--gray); text-align: right;">65% Capacity</div>
+                        </div>
+                        <div class="team-actions">
+                            <button class="btn btn-primary btn-sm" style="flex: 1;">Assign Complaint</button>
+                            <button class="btn btn-outline btn-sm">View Details</button>
+                        </div>
+                    </div>
+
+                    <div class="team-card">
+                        <div class="team-header">
+                            <div class="team-name">IT Support</div>
+                            <div class="team-status status-busy">Busy</div>
+                        </div>
+                        <div class="team-stats">
+                            <div class="stat">
+                                <div class="stat-value">8</div>
+                                <div class="stat-label">Pending</div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-value">32</div>
+                                <div class="stat-label">Completed</div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-value">92%</div>
+                                <div class="stat-label">Success Rate</div>
+                            </div>
+                        </div>
+                        <div class="team-progress">
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 90%"></div>
+                            </div>
+                            <div style="font-size: 12px; color: var(--gray); text-align: right;">90% Capacity</div>
+                        </div>
+                        <div class="team-actions">
+                            <button class="btn btn-primary btn-sm" style="flex: 1;" disabled>Assign Complaint</button>
+                            <button class="btn btn-outline btn-sm">View Details</button>
+                        </div>
+                    </div>
+
+                    <div class="team-card">
+                        <div class="team-header">
+                            <div class="team-name">Operations</div>
+                            <div class="team-status status-available">Available</div>
+                        </div>
+                        <div class="team-stats">
+                            <div class="stat">
+                                <div class="stat-value">5</div>
+                                <div class="stat-label">Pending</div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-value">28</div>
+                                <div class="stat-label">Completed</div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-value">88%</div>
+                                <div class="stat-label">Success Rate</div>
+                            </div>
+                        </div>
+                        <div class="team-progress">
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 45%"></div>
+                            </div>
+                            <div style="font-size: 12px; color: var(--gray); text-align: right;">45% Capacity</div>
+                        </div>
+                        <div class="team-actions">
+                            <button class="btn btn-primary btn-sm" style="flex: 1;">Assign Complaint</button>
+                            <button class="btn btn-outline btn-sm">View Details</button>
+                        </div>
+                    </div>
+
+                    <div class="team-card">
+                        <div class="team-header">
+                            <div class="team-name">Compliance & Fraud</div>
+                            <div class="team-status status-doubt">Review Needed</div>
+                        </div>
+                        <div class="team-stats">
+                            <div class="stat">
+                                <div class="stat-value">15</div>
+                                <div class="stat-label">Pending</div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-value">62</div>
+                                <div class="stat-label">Completed</div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-value">94%</div>
+                                <div class="stat-label">Success Rate</div>
+                            </div>
+                        </div>
+                        <div class="team-progress">
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 75%"></div>
+                            </div>
+                            <div style="font-size: 12px; color: var(--gray); text-align: right;">75% Capacity</div>
+                        </div>
+                        <div class="team-actions">
+                            <button class="btn btn-primary btn-sm" style="flex: 1;">Assign Complaint</button>
+                            <button class="btn btn-outline btn-sm">View Details</button>
+                        </div>
+                    </div>
+
+                    <div class="team-card">
+                        <div class="team-header">
+                            <div class="team-name">Product/Service Teams</div>
+                            <div class="team-status status-available">Available</div>
+                        </div>
+                        <div class="team-stats">
+                            <div class="stat">
+                                <div class="stat-value">7</div>
+                                <div class="stat-label">Pending</div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-value">41</div>
+                                <div class="stat-label">Completed</div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-value">91%</div>
+                                <div class="stat-label">Success Rate</div>
+                            </div>
+                        </div>
+                        <div class="team-progress">
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 55%"></div>
+                            </div>
+                            <div style="font-size: 12px; color: var(--gray); text-align: right;">55% Capacity</div>
+                        </div>
+                        <div class="team-actions">
+                            <button class="btn btn-primary btn-sm" style="flex: 1;">Assign Complaint</button>
+                            <button class="btn btn-outline btn-sm">View Details</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Recent High Priority Complaints</h3>
+                        <button class="btn btn-primary">View All</button>
+                    </div>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Complaint ID</th>
+                                    <th>Date</th>
+                                    <th>Brief Description</th>
+                                    <th>Priority</th>
+                                    <th>Product</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>CITEMS</td>
+                                    <td>2024-01-15</td>
+                                    <td>Unauthorized transaction</td>
+                                    <td class="priority-high">High</td>
+                                    <td>Savings Account</td>
+                                    <td>
+                                        <button class="btn btn-primary btn-sm">View</button>
+                                        <button class="btn btn-outline btn-sm">Assign</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>CRTWRG</td>
+                                    <td>2024-01-14</td>
+                                    <td>Online banking access issue</td>
+                                    <td class="priority-medium">Medium</td>
+                                    <td>Digital Banking</td>
+                                    <td>
+                                        <button class="btn btn-primary btn-sm">View</button>
+                                        <button class="btn btn-outline btn-sm">Assign</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Complaints Page (From your code) -->
+        <section id="complaints" class="page">
+            <div class="container">
+                <div class="page-header">
+                    <h2>SRI Complaints</h2>
+                    <p>Manage and track customer complaints efficiently</p>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Imported Complaints</h3>
+                        <button class="btn btn-primary">Import New</button>
+                    </div>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>COMPLIANT ID</th>
+                                    <th>DATE</th>
+                                    <th>BRIEF DESCRIPTION</th>
+                                    <th>PRIORITY</th>
+                                    <th>PRODUCT</th>
+                                    <th>ACTIONS</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>CITEMS</td>
+                                    <td>2024-01-15</td>
+                                    <td>Issue with transaction processing</td>
+                                    <td class="priority-high">High</td>
+                                    <td>Savings Account</td>
+                                    <td>
+                                        <button class="btn btn-primary btn-sm">View</button>
+                                        <button class="btn btn-outline btn-sm">Assign</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>CRTWRG</td>
+                                    <td>2024-01-14</td>
+                                    <td>Average access process issue</td>
+                                    <td class="priority-medium">Medium</td>
+                                    <td>Current Account</td>
+                                    <td>
+                                        <button class="btn btn-primary btn-sm">View</button>
+                                        <button class="btn btn-outline btn-sm">Assign</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>CITETI</td>
+                                    <td>2024-01-14</td>
+                                    <td>Connect license problem</td>
+                                    <td class="priority-medium">Medium</td>
+                                    <td>Business Banking</td>
+                                    <td>
+                                        <button class="btn btn-primary btn-sm">View</button>
+                                        <button class="btn btn-outline btn-sm">Assign</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>CINTSI</td>
+                                    <td>2024-01-13</td>
+                                    <td>Project log processes issue</td>
+                                    <td class="priority-low">Low</td>
+                                    <td>Corporate Banking</td>
+                                    <td>
+                                        <button class="btn btn-primary btn-sm">View</button>
+                                        <button class="btn btn-outline btn-sm">Assign</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>CRRIFI</td>
+                                    <td>2024-01-12</td>
+                                    <td>Last visit issue</td>
+                                    <td class="priority-low">Low</td>
+                                    <td>Retail Banking</td>
+                                    <td>
+                                        <button class="btn btn-primary btn-sm">View</button>
+                                        <button class="btn btn-outline btn-sm">Assign</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Manual Complaint Entry</h3>
+                    </div>
+                    <div class="form-container">
+                        <form>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="user-name">User Name</label>
+                                    <input type="text" id="user-name" class="form-control" placeholder="Enter user name">
+                                </div>
+                                <div class="form-group">
+                                    <label for="user-email">User Email</label>
+                                    <input type="email" id="user-email" class="form-control" placeholder="Enter user email">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="issue-description">Issue Description</label>
+                                <textarea id="issue-description" class="form-control" rows="4" placeholder="Describe the issue"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="priority">Priority</label>
+                                <select id="priority" class="form-control">
+                                    <option value="">Select priority</option>
+                                    <option value="high">High</option>
+                                    <option value="medium">Medium</option>
+                                    <option value="low">Low</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary" style="width: 100%;">Submit Complaint</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Complaint Details Page (From your code) -->
+        <section id="complaint-details" class="page">
+            <div class="container">
+                <div class="page-header">
+                    <h2>Complaint Details</h2>
+                    <p>Complaint #12B-2024d025-0ff</p>
+                </div>
+
+                <div class="complaint-details">
+                    <div>
+                        <div class="card">
+                            <div class="card-header">
+                                <h3>Complaint Text</h3>
+                            </div>
+                            <div class="complaint-info">
+                                <p>Customer reported an unauthorized transaction of $500 from their account on 2024-01-15 at 10:30 AM. The customer claims they were at home during the transaction time and did not authorize any such transaction. They have provided their bank statement as evidence, which clearly shows the debit. The merchant name for the transaction is "ClochaRyet No.2" which the customer has never visited.</p>
+                            </div>
+
+                            <div class="complaint-history">
+                                <div class="card-header">
+                                    <h3>Complaint History</h3>
+                                </div>
+                                <div class="table-container">
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th>DATE</th>
+                                                <th>STATUS</th>
+                                                <th>ASSIGNED TO</th>
+                                                <th>ACTION</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>2024-01-15</td>
+                                                <td><span class="status-badge status-pending">Pending</span></td>
+                                                <td>Jane Dow</td>
+                                                <td><button class="btn btn-primary btn-sm">View Details</button></td>
+                                            </tr>
+                                            <tr>
+                                                <td>2024-01-16</td>
+                                                <td><span class="status-badge status-in-progress">In Progress</span></td>
+                                                <td>Jane North</td>
+                                                <td><button class="btn btn-primary btn-sm">View Details</button></td>
+                                            </tr>
+                                            <tr>
+                                                <td>2024-01-18</td>
+                                                <td><span class="status-badge status-in-progress">In Progress</span></td>
+                                                <td>Support Team</td>
+                                                <td><button class="btn btn-primary btn-sm">View Details</button></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="card">
+                            <div class="card-header">
+                                <h3>AI Classification</h3>
+                            </div>
+                            <div class="ai-classification">
+                                <div class="classification-item">
+                                    <h4>Category</h4>
+                                    <p>Fraud</p>
+                                </div>
+                                <div class="classification-item">
+                                    <h4>Sentiment</h4>
+                                    <p>High</p>
+                                </div>
+                                <div class="classification-item">
+                                    <h4>Complexity</h4>
+                                    <p>Medium</p>
+                                </div>
+                                <div class="classification-item">
+                                    <h4>Risk Level</h4>
+                                    <p>High</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-header">
+                                <h3>AI Suggestions</h3>
+                            </div>
+                            <div class="ai-classification">
+                                <div class="classification-item">
+                                    <h4>Suggested Category</h4>
+                                    <p>Fraud</p>
+                                </div>
+                                <div class="classification-item">
+                                    <h4>Suggested Priority</h4>
+                                    <p>High</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Routing Page (From your code) -->
+        <section id="routing" class="page">
+            <div class="container">
+                <div class="page-header">
+                    <h2>Complaint Routing</h2>
+                    <p>AI-powered routing for efficient complaint handling</p>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Complaint Details</h3>
+                    </div>
+                    <div class="complaint-info">
+                        <p><strong>Complaint ID:</strong> #123408788</p>
+                        <p><strong>Complaint Type:</strong> Fraud</p>
+                        <p><strong>Customer Type:</strong> Premium</p>
+                        <p><strong>Transaction Amount:</strong> $500.00</p>
+                        <p><strong>Tools Required:</strong> Fraud Detection System</p>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>AI-Assigned Team</h3>
+                        </div>
+                        <div class="complaint-info">
+                            <p>This complaint has been assigned to the <strong>Fraud Investigation Team</strong> based on AI analysis of the complaint content, customer profile, and transaction details.</p>
+                            <p>The AI has determined that this case requires specialized fraud detection tools and expertise for proper resolution.</p>
+                        </div>
+                    </div>
+
+                    <div class="form-group" style="text-align: center; margin-top: 20px;">
+                        <button class="btn btn-primary">Route to Team</button>
+                        <button class="btn btn-outline">Manual Override</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Team Dashboard Page (From your code) -->
+        <section id="team-dashboard" class="page">
+            <div class="container">
+                <div class="page-header">
+                    <h2>Team Dashboard</h2>
+                    <p>View and manage complaint progress for your team</p>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Complaint Queue - Fraud Investigation Team</h3>
+                    </div>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Complaint ID</th>
+                                    <th>Priority</th>
+                                    <th>Status</th>
+                                    <th>Assigned Date</th>
+                                    <th>Time to Resolution</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>EYB3A01</td>
+                                    <td class="priority-high">High</td>
+                                    <td><span class="status-badge status-in-progress">In Progress</span></td>
+                                    <td>2024-01-15</td>
+                                    <td>2 days</td>
+                                    <td>
+                                        <button class="btn btn-primary btn-sm">Update</button>
+                                        <button class="btn btn-outline btn-sm">Details</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>EYB3B02</td>
+                                    <td class="priority-medium">Medium</td>
+                                    <td><span class="status-badge status-pending">Pending</span></td>
+                                    <td>2024-01-16</td>
+                                    <td>1 day</td>
+                                    <td>
+                                        <button class="btn btn-primary btn-sm">Update</button>
+                                        <button class="btn btn-outline btn-sm">Details</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>EYB3E03</td>
+                                    <td class="priority-low">Low</td>
+                                    <td><span class="status-badge status-in-progress">In Progress</span></td>
+                                    <td>2024-01-17</td>
+                                    <td>3 days</td>
+                                    <td>
+                                        <button class="btn btn-primary btn-sm">Update</button>
+                                        <button class="btn btn-outline btn-sm">Details</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>EYB3F04</td>
+                                    <td class="priority-high">High</td>
+                                    <td><span class="status-badge status-resolved">Resolved</span></td>
+                                    <td>2024-01-18</td>
+                                    <td>0 days</td>
+                                    <td>
+                                        <button class="btn btn-primary btn-sm">View</button>
+                                        <button class="btn btn-outline btn-sm">Reopen</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>EYB3F05</td>
+                                    <td class="priority-medium">Medium</td>
+                                    <td><span class="status-badge status-pending">Pending</span></td>
+                                    <td>2024-01-18</td>
+                                    <td>1 day</td>
+                                    <td>
+                                        <button class="btn btn-primary btn-sm">Update</button>
+                                        <button class="btn btn-outline btn-sm">Details</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Analytics Page -->
+        <section id="analytics" class="page">
+            <div class="container">
+                <div class="page-header">
+                    <h2>Analytics Dashboard</h2>
+                    <p>Comprehensive insights into complaint patterns and resolution metrics</p>
+                </div>
+
+                <div class="stats-container">
+                    <div class="stat-card">
+                        <div class="stat-icon primary">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>1,248</h3>
+                            <p>Total Complaints This Month</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon secondary">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>89%</h3>
+                            <p>Average Resolution Rate</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon accent">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>2.1h</h3>
+                            <p>Avg. Resolution Time</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="charts-container">
+                    <div class="chart-card">
+                        <div class="card-header">
+                            <h3>Monthly Complaints Trend</h3>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="monthlyComplaintsChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="chart-card">
+                        <div class="card-header">
+                            <h3>Repetitive Complaints</h3>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="repetitiveComplaintsChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="chart-card">
+                        <div class="card-header">
+                            <h3>Complaints by Category</h3>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="complaintsByCategoryChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="chart-card">
+                        <div class="card-header">
+                            <h3>Resolution Time Analysis</h3>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="resolutionTimeChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer id="main-footer" style="display: none;">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>SBI Connect</h3>
+                    <p>AI-powered banking support platform for efficient complaint management and resolution.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="#" data-page="home">Home</a></li>
+                        <li><a href="#" data-page="complaints">Complaints</a></li>
+                        <li><a href="#" data-page="routing">Routing</a></li>
+                        <li><a href="#" data-page="analytics">Analytics</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Support</h3>
+                    <ul>
+                        <li><a href="#">Help Center</a></li>
+                        <li><a href="#">Documentation</a></li>
+                        <li><a href="#">Contact Us</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2025 BankEase. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Auth Selection
+        document.getElementById('login-option').addEventListener('click', function() {
+            document.getElementById('login-option').classList.add('active');
+            document.getElementById('register-option').classList.remove('active');
+            document.getElementById('login-form-container').style.display = 'block';
+            document.getElementById('register-form-container').style.display = 'none';
+        });
+
+        document.getElementById('register-option').addEventListener('click', function() {
+            document.getElementById('register-option').classList.add('active');
+            document.getElementById('login-option').classList.remove('active');
+            document.getElementById('register-form-container').style.display = 'block';
+            document.getElementById('login-form-container').style.display = 'none';
+        });
+
+        // Login functionality
+        document.getElementById('login-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const employeeName = document.getElementById('employee-name').value;
+            
+            // Simulate login
+            document.getElementById('auth-selection').classList.remove('active');
+            document.getElementById('home').classList.add('active');
+            document.getElementById('main-header').style.display = 'block';
+            document.getElementById('main-footer').style.display = 'block';
+            document.getElementById('user-display-name').textContent = employeeName;
+            
+            // Initialize charts after login
+            initializeCharts();
+        });
+
+        // Register functionality
+        document.getElementById('register-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Bank registration successful! You can now login.');
+            document.getElementById('login-option').click();
+            document.getElementById('register-form').reset();
+        });
+
+        // Logout functionality
+        document.getElementById('logout-btn').addEventListener('click', function() {
+            if (confirm('Are you sure you want to logout?')) {
+                document.getElementById('auth-selection').classList.add('active');
+                document.getElementById('home').classList.remove('active');
+                document.getElementById('main-header').style.display = 'none';
+                document.getElementById('main-footer').style.display = 'none';
+                
+                // Reset forms
+                document.getElementById('login-form').reset();
+                document.getElementById('register-form').reset();
+                
+                // Reset to login option
+                document.getElementById('login-option').click();
+            }
+        });
+
+        // Page navigation
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const pageId = this.getAttribute('data-page');
+                
+                // Update active nav link
+                document.querySelectorAll('.nav-link').forEach(nav => {
+                    nav.classList.remove('active');
+                });
+                this.classList.add('active');
+                
+                // Show the corresponding page
+                document.querySelectorAll('.page').forEach(page => {
+                    page.classList.remove('active');
+                });
+                
+                document.getElementById(pageId).classList.add('active');
+            });
+        });
+
+        // View complaint details
+        document.querySelectorAll('.btn-primary.btn-sm').forEach(button => {
+            if (button.textContent === 'View') {
+                button.addEventListener('click', function() {
+                    document.querySelectorAll('.page').forEach(page => {
+                        page.classList.remove('active');
+                    });
+                    document.getElementById('complaint-details').classList.add('active');
+                    
+                    // Update nav
+                    document.querySelectorAll('.nav-link').forEach(nav => {
+                        nav.classList.remove('active');
+                    });
+                });
+            }
+        });
+
+        // Footer navigation
+        document.querySelectorAll('footer a[data-page]').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const pageId = this.getAttribute('data-page');
+                
+                // Update active nav link
+                document.querySelectorAll('.nav-link').forEach(nav => {
+                    nav.classList.remove('active');
+                    if (nav.getAttribute('data-page') === pageId) {
+                        nav.classList.add('active');
+                    }
+                });
+                
+                // Show the corresponding page
+                document.querySelectorAll('.page').forEach(page => {
+                    page.classList.remove('active');
+                });
+                
+                document.getElementById(pageId).classList.add('active');
+            });
+        });
+
+        // Form submissions
+        document.querySelectorAll('form').forEach(form => {
+            if (form.id !== 'login-form' && form.id !== 'register-form') {
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    alert('Form submitted successfully!');
+                });
+            }
+        });
+
+        // Initialize Charts
+        function initializeCharts() {
+            // Monthly Complaints Chart
+            const monthlyCtx = document.getElementById('monthlyComplaintsChart').getContext('2d');
+            new Chart(monthlyCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                    datasets: [{
+                        label: 'Complaints Received',
+                        data: [1200, 1900, 1500, 2200, 1800, 2500, 2100, 2400, 2000, 2300, 2100, 2600],
+                        borderColor: '#1a4f8c',
+                        backgroundColor: 'rgba(26, 79, 140, 0.1)',
+                        borderWidth: 2,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Number of Complaints'
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Repetitive Complaints Chart
+            const repetitiveCtx = document.getElementById('repetitiveComplaintsChart').getContext('2d');
+            new Chart(repetitiveCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Account Issues', 'Transaction Problems', 'Login Difficulties', 'Card Issues', 'Loan Queries'],
+                    datasets: [{
+                        label: 'Repetitive Complaints',
+                        data: [65, 59, 80, 81, 56],
+                        backgroundColor: [
+                            'rgba(255, 107, 53, 0.7)',
+                            'rgba(74, 175, 80, 0.7)',
+                            'rgba(26, 79, 140, 0.7)',
+                            'rgba(231, 76, 60, 0.7)',
+                            'rgba(243, 156, 18, 0.7)'
+                        ],
+                        borderColor: [
+                            'rgb(255, 107, 53)',
+                            'rgb(74, 175, 80)',
+                            'rgb(26, 79, 140)',
+                            'rgb(231, 76, 60)',
+                            'rgb(243, 156, 18)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Number of Repetitive Complaints'
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Complaints by Category Chart
+            const categoryCtx = document.getElementById('complaintsByCategoryChart').getContext('2d');
+            new Chart(categoryCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Account Issues', 'Transactions', 'Cards', 'Loans', 'Digital Banking', 'Fraud'],
+                    datasets: [{
+                        data: [30, 25, 15, 10, 15, 5],
+                        backgroundColor: [
+                            '#1a4f8c',
+                            '#4caf50',
+                            '#ff6b35',
+                            '#9c27b0',
+                            '#ffc107',
+                            '#e74c3c'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+
+            // Resolution Time Chart
+            const resolutionCtx = document.getElementById('resolutionTimeChart').getContext('2d');
+            new Chart(resolutionCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Customer Support', 'IT Support', 'Operations', 'Compliance', 'Product Teams'],
+                    datasets: [{
+                        label: 'Avg. Resolution Time (hours)',
+                        data: [2.1, 3.5, 1.8, 5.2, 2.7],
+                        backgroundColor: 'rgba(26, 79, 140, 0.7)',
+                        borderColor: 'rgb(26, 79, 140)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Hours'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>
